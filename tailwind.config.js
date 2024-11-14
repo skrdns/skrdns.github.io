@@ -17,6 +17,9 @@ module.exports = {
       backgroundImage: {
         'gif-bg': "url('/src/assets/disco.gif')", // Путь к гифке фона
       },
+      maxWidth: {
+        '7xl': '1900px', // Додає нову максимальну ширину
+      },
     },
   },
   plugins: [],

@@ -1,202 +1,71 @@
 <template>
-    <div class="cart-container">
-      <h1 class="text-3xl font-bold mb-6">Your Cart</h1>
-      <div v-if="cartItems.length === 0" class="empty-cart">
-        <p>Your cart is empty. Add some products.</p>
-      </div>
-      
-      <div v-else>
-        <ul class="cart-items">
-          <li v-for="(item, index) in cartItems" :key="index" class="cart-item">
-            <div class="item-info">
-              <img :src="item.image" alt="product image" class="item-image" />
-              <div class="item-details">
-                <p class="item-name">{{ item.name }}</p>
-                <p class="item-price">${{ item.price }}</p>
-                <div class="item-quantity">
-                  <button @click="decreaseQuantity(index)" class="quantity-btn">-</button>
-                  <span>{{ item.quantity }}</span>
-                  <button @click="increaseQuantity(index)" class="quantity-btn">+</button>
-                </div>
-              </div>
+  <div class="cart-container p-10 bg-gray-900 bg-opacity-90 rounded-lg mt-20 text-white text-center w-11/12 max-w-7xl mx-auto">
+    <h1 class="text-4xl font-extrabold mb-8">Your Cart</h1>
+
+    <div v-if="cartItems.length === 0" class="empty-cart text-xl">
+      <p>Your cart is empty. Add some products.</p>
+    </div>
+    
+    <div v-else>
+      <ul class="cart-items flex flex-wrap justify-center gap-5 mb-10">
+        <li v-for="(item, index) in cartItems" :key="index" class="cart-item flex flex-col items-center w-full md:w-1/2 lg:w-1/3 p-5 bg-purple-800 rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all">
+          <div class="item-info flex items-center mb-4">
+            <img :src="item.image" alt="product image" class="item-image w-16 h-16 object-cover rounded-md mr-4"/>
+            <div class="item-details text-left">
+              <p class="item-name text-xl font-semibold">{{ item.name }}</p>
+              <p class="item-price text-lg text-gray-300">${{ item.price }}</p>
             </div>
-            <button @click="removeFromCart(index)" class="remove-item-btn">Видалити</button>
-          </li>
-        </ul>
-  
-        <div class="cart-summary">
-          <p>Total: ${{ totalAmount }}</p>
-          <button @click="proceedToCheckout" class="checkout-btn">Оформити замовлення</button>
-        </div>
+          </div>
+          <div class="item-quantity flex items-center gap-3 mt-2">
+            <button @click="decreaseQuantity(index)" class="quantity-btn bg-white text-black px-2 py-1 rounded-md font-bold">-</button>
+            <span class="text-xl font-semibold">{{ item.quantity }}</span>
+            <button @click="increaseQuantity(index)" class="quantity-btn bg-white text-black px-2 py-1 rounded-md font-bold">+</button>
+          </div>
+          <button @click="removeFromCart(index)" class="remove-item-btn mt-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-bold">Видалити</button>
+        </li>
+      </ul>
+
+      <div class="cart-summary flex flex-col md:flex-row items-center justify-between p-5 bg-gray-100 rounded-lg text-gray-800">
+        <p class="text-2xl font-semibold">Total: ${{ totalAmount }}</p>
+        <button @click="proceedToCheckout" class="checkout-btn mt-4 md:mt-0 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-md font-bold transition-colors">Оформити замовлення</button>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: "Cart",
-    data() {
-      return {
-        // Приклад товарів у кошику (можете динамічно додавати їх з іншої частини додатку)
-        cartItems: [
-          { name: "Dartcat", price: 5.54, quantity: 1, image: "@/png/1" },
-          { name: "Skelecat", price: 2.9, quantity: 2, image: "@/png/2" },
-          { name: "Cosmocat", price: 0.54, quantity: 1, image: "@/png/3" },
-          { name: "Skeletok", price: 2.81, quantity: 2, image: "@/png/4" },
-        ],
-      };
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Cart",
+  data() {
+    return {
+      cartItems: [
+        { name: "Dartcat", price: 5.54, quantity: 1, image: "@/png/1" },
+        { name: "Skelecat", price: 2.9, quantity: 2, image: "@/png/2" },
+        { name: "Cosmocat", price: 0.54, quantity: 1, image: "@/png/3" },
+        { name: "Skeletok", price: 2.81, quantity: 2, image: "@/png/4" },
+      ],
+    };
+  },
+  computed: {
+    totalAmount() {
+      return this.cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     },
-    computed: {
-      totalAmount() {
-        return this.cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-      },
+  },
+  methods: {
+    increaseQuantity(index) {
+      this.cartItems[index].quantity++;
     },
-    methods: {
-      increaseQuantity(index) {
-        this.cartItems[index].quantity++;
-      },
-      decreaseQuantity(index) {
-        if (this.cartItems[index].quantity > 1) {
-          this.cartItems[index].quantity--;
-        }
-      },
-      removeFromCart(index) {
-        this.cartItems.splice(index, 1);
-      },
-      proceedToCheckout() {
-        // Перехід до сторінки оформлення замовлення
-        this.$router.push({ name: 'Checkout' });
-      },
+    decreaseQuantity(index) {
+      if (this.cartItems[index].quantity > 1) {
+        this.cartItems[index].quantity--;
+      }
     },
-  };
-  </script>
-  
-  <style scoped>
-  .cart-container {
-    padding: 40px;
-    font-family: 'Arial', sans-serif;
-    background-color: rgba(50, 50, 50, 0.9); /* Темно-сірий напівпрозорий фон */
-    border-radius: 15px;
-    margin-top: 80px;
-    color: #fff;
-    text-align: center;
-  }
-  
-  h1 {
-    color: #fff;
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .cart-items {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-  }
-  
-  .cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: calc(50% - 10px);
-    padding: 20px;
-    background-color: #620F9A; /* Темний фіолетовий для фону картки */
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  
-  .cart-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  }
-  
-  .item-info {
-    display: flex;
-    align-items: center;
-  }
-  
-  .item-image {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-right: 15px;
-  }
-  
-  .item-details {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .item-name {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #f1f1f1;
-  }
-  
-  .item-price {
-    font-size: 1rem;
-    color: #e0e0e0;
-  }
-  
-  .item-quantity {
-    display: flex;
-    align-items: center;
-    color: #060606;
-  }
-  
-  .quantity-btn {
-    background-color: #ffffff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin: 0 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .remove-item-btn {
-    background-color: #DE0B0B;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-  }
-  
-  .remove-item-btn:hover {
-    background-color: #a50a0a;
-  }
-  
-  .cart-summary {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    background-color: rgba(240, 240, 240, 0.9);
-    margin-top: 30px;
-    border-radius: 10px;
-    color: #333;
-  }
-  
-  .checkout-btn {
-    background-color: #16C64B;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-  }
-  
-  .checkout-btn:hover {
-    background-color: #139a3c;
-  }
-  </style>
-  
+    removeFromCart(index) {
+      this.cartItems.splice(index, 1);
+    },
+    proceedToCheckout() {
+      this.$router.push({ name: 'Checkout' });
+    },
+  },
+};
+</script>

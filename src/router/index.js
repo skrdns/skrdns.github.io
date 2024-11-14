@@ -4,6 +4,7 @@ import AuthForm from '@/components/AuthForm.vue';
 import Cart from '@/components/Cart.vue';
 import Shop from '@/components/Shop.vue';  // Імпортуємо компонент Shop
 import Features from '@/components/Features.vue';  // Імпортуємо компонент Features
+import NotFound from '@/components/NotFound.vue';  // Імпортуємо компонент сторінки 404
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     name: 'Features',
     component: Features,  // Додаємо маршрут для Features
   },
+  {
+    path: '/:pathMatch(.*)*', // новий синтаксис для перехоплення всіх маршрутів
+    name: 'NotFound',
+    component: NotFound,
+  },  
 ];
 
 const router = createRouter({
